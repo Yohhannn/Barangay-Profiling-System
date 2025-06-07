@@ -1,5 +1,5 @@
 
--- CREATE DATABASE marigondon_profiling_db;
+CREATE DATABASE marigondon_profiling_db;
 
 CREATE SEQUENCE SYS_USER_ID_SEQ START 1001;
 
@@ -10,12 +10,6 @@ CREATE TYPE role_type_enum AS ENUM(
     'Super Admin'
     );
 
--- CREATE TYPE permission_type_enum AS ENUM(
---     'View',
---     'Create',
---     'Update',
---     'Delete'
---     );
 
 CREATE TABLE SYSTEM_ACCOUNT (
                                 SYS_ID SERIAL PRIMARY KEY,
@@ -30,23 +24,23 @@ CREATE TABLE SYSTEM_ACCOUNT (
 
 );
 
--- CREATE TYPE action_type_enum AS ENUM (
---     'INSERT',
---     'UPDATE',
---     'DELETE',
---     'LOGIN',
---     'LOGOUT'
---     );
---
--- CREATE TABLE SYSTEM_ACTIVITY_LOG(
---                                     ACT_ID SERIAL PRIMARY KEY,
---                                     ACT_TIMESTAMP TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---                                     ACT_ACTION_TYPE action_type_enum,
---                                     ACT_TABLE_NAME VARCHAR(50) NOT NULL,
---                                     ACT_ENTITY_ID INT,
---                                     ACT_DESCRIPTION TEXT,
---                                     SYS_ID INT NOT NULL REFERENCES SYSTEM_ACCOUNT(SYS_ID) ON DELETE RESTRICT ON UPDATE CASCADE
--- );
+CREATE TYPE action_type_enum AS ENUM (
+    'INSERT',
+    'UPDATE',
+    'DELETE',
+    'LOGIN',
+    'LOGOUT'
+    );
+
+CREATE TABLE SYSTEM_ACTIVITY_LOG(
+                                    ACT_ID SERIAL PRIMARY KEY,
+                                    ACT_TIMESTAMP TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                    ACT_ACTION_TYPE action_type_enum,
+                                    ACT_TABLE_NAME VARCHAR(50) NOT NULL,
+                                    ACT_ENTITY_ID INT,
+                                    ACT_DESCRIPTION TEXT,
+                                    SYS_ID INT NOT NULL REFERENCES SYSTEM_ACCOUNT(SYS_ID) ON DELETE RESTRICT ON UPDATE CASCADE
+);
 
 -- Table: SITIO
 CREATE TABLE SITIO (
@@ -73,16 +67,16 @@ CREATE TABLE RELIGION (
 
 -- Table: SOCIO_ECONOMIC_STATUS
 CREATE TABLE SOCIO_ECONOMIC_STATUS (
-    SOEC_ID SERIAL PRIMARY KEY,
-    SOEC_STATUS VARCHAR(100) NOT NULL CHECK (
-        SOEC_STATUS IN ('NHTS 4Ps', 'NHTS Non-4Ps', 'Non-NHTS')
-    ),
-    SOEC_NUMBER VARCHAR(50),
-    CONSTRAINT chk_socio_status CHECK (
-        (SOEC_STATUS IN ('NHTS 4Ps', 'NHTS Non-4Ps') AND SOEC_NUMBER IS NOT NULL)
-        OR
-        (SOEC_STATUS = 'Non-NHTS')
-    )
+                                       SOEC_ID SERIAL PRIMARY KEY,
+                                       SOEC_STATUS VARCHAR(100) NOT NULL CHECK (
+                                           SOEC_STATUS IN ('NHTS 4Ps', 'NHTS Non-4Ps', 'Non-NHTS')
+                                           ),
+                                       SOEC_NUMBER VARCHAR(50),
+                                       CONSTRAINT chk_socio_status CHECK (
+                                           (SOEC_STATUS IN ('NHTS 4Ps', 'NHTS Non-4Ps') AND SOEC_NUMBER IS NOT NULL)
+                                               OR
+                                           (SOEC_STATUS = 'Non-NHTS')
+                                           )
 );
 
 
@@ -135,8 +129,8 @@ CREATE TABLE HOUSEHOLD_INFO (
                                 WATER_ID INT NOT NULL,
                                 TOILET_ID INT NOT NULL,
                                 SITIO_ID INT NOT NULL,
-    ENCODED_BY_SYS_ID INT NOT NULL,
-    LAST_UPDATED_BY_SYS_ID INT NOT NULL,
+                                ENCODED_BY_SYS_ID INT NOT NULL,
+                                LAST_UPDATED_BY_SYS_ID INT NOT NULL,
                                 CONSTRAINT fk_water_source FOREIGN KEY (WATER_ID) REFERENCES WATER_SOURCE(WATER_ID) ON DELETE RESTRICT ON UPDATE CASCADE,
                                 CONSTRAINT fk_toilet_type FOREIGN KEY (TOILET_ID) REFERENCES TOILET_TYPE(TOIL_ID) ON DELETE RESTRICT ON UPDATE CASCADE,
                                 CONSTRAINT fk_sitio FOREIGN KEY (SITIO_ID) REFERENCES SITIO(SITIO_ID) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -201,66 +195,66 @@ CREATE TABLE CONTACT (
 
 -- Table: CITIZEN
 CREATE TABLE CITIZEN (
-    CTZ_ID SERIAL PRIMARY KEY,
-    CTZ_UUID INT UNIQUE DEFAULT NEXTVAL('SYS_CTZ_ID_SEQ'),
-    CTZ_FIRST_NAME VARCHAR(100) NOT NULL,
-    CTZ_MIDDLE_NAME VARCHAR(100),
-    CTZ_LAST_NAME VARCHAR(100) NOT NULL,
-    CTZ_SUFFIX VARCHAR(10),
-    CTZ_DATE_OF_BIRTH DATE NOT NULL,
-    CTZ_SEX CHAR(1) NOT NULL CHECK (CTZ_SEX IN ('M', 'F')),
-    CTZ_CIVIL_STATUS civil_status_type NOT NULL,
-    CTZ_BLOOD_TYPE blood_type_enum,
-    CTZ_IS_ALIVE BOOLEAN DEFAULT TRUE,
-    CTZ_DATE_OF_DEATH DATE,
-    CTZ_REASON_OF_DEATH TEXT,
-    CTZ_IS_REGISTERED_VOTER BOOLEAN DEFAULT FALSE,
-    CTZ_IS_IP BOOLEAN DEFAULT FALSE,
-    CTZ_PLACE_OF_BIRTH TEXT NOT NULL,
-    CTZ_DATE_ENCODED TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CTZ_LAST_UPDATED TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CTZ_IS_DELETED BOOLEAN DEFAULT FALSE,
-    CTZ_IS_PENDING_DELETE BOOLEAN DEFAULT FALSE,
-    CTZ_DELETE_REQ_REASON TEXT,
+                         CTZ_ID SERIAL PRIMARY KEY,
+                         CTZ_UUID INT UNIQUE DEFAULT NEXTVAL('SYS_CTZ_ID_SEQ'),
+                         CTZ_FIRST_NAME VARCHAR(100) NOT NULL,
+                         CTZ_MIDDLE_NAME VARCHAR(100),
+                         CTZ_LAST_NAME VARCHAR(100) NOT NULL,
+                         CTZ_SUFFIX VARCHAR(10),
+                         CTZ_DATE_OF_BIRTH DATE NOT NULL,
+                         CTZ_SEX CHAR(1) NOT NULL CHECK (CTZ_SEX IN ('M', 'F')),
+                         CTZ_CIVIL_STATUS civil_status_type NOT NULL,
+                         CTZ_BLOOD_TYPE blood_type_enum,
+                         CTZ_IS_ALIVE BOOLEAN DEFAULT TRUE,
+                         CTZ_DATE_OF_DEATH DATE,
+                         CTZ_REASON_OF_DEATH TEXT,
+                         CTZ_IS_REGISTERED_VOTER BOOLEAN DEFAULT FALSE,
+                         CTZ_IS_IP BOOLEAN DEFAULT FALSE,
+                         CTZ_PLACE_OF_BIRTH TEXT NOT NULL,
+                         CTZ_DATE_ENCODED TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                         CTZ_LAST_UPDATED TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                         CTZ_IS_DELETED BOOLEAN DEFAULT FALSE,
+                         CTZ_IS_PENDING_DELETE BOOLEAN DEFAULT FALSE,
+                         CTZ_DELETE_REQ_REASON TEXT,
 
-    EDU_ID INT,
-    SOEC_ID INT NOT NULL,
-    PHEA_ID INT,
-    REL_ID INT,
-    ETH_ID INT,
-    CLAH_ID INT,
-    RTH_ID INT NOT NULL,
-    HH_ID INT NOT NULL,
-    SITIO_ID INT NOT NULL,
-    ENCODED_BY_SYS_ID INT NOT NULL,
-    LAST_UPDATED_BY_SYS_ID INT NOT NULL,
-    CON_ID INT,  -- Added contact reference here
+                         EDU_ID INT,
+                         SOEC_ID INT NOT NULL,
+                         PHEA_ID INT,
+                         REL_ID INT,
+                         ETH_ID INT,
+                         CLAH_ID INT,
+                         RTH_ID INT NOT NULL,
+                         HH_ID INT NOT NULL,
+                         SITIO_ID INT NOT NULL,
+                         ENCODED_BY_SYS_ID INT NOT NULL,
+                         LAST_UPDATED_BY_SYS_ID INT NOT NULL,
+                         CON_ID INT,  -- Added contact reference here
 
-    CONSTRAINT fk_encoded_by FOREIGN KEY (ENCODED_BY_SYS_ID) REFERENCES SYSTEM_ACCOUNT(SYS_USER_ID) ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT fk_last_updated_by FOREIGN KEY (LAST_UPDATED_BY_SYS_ID) REFERENCES SYSTEM_ACCOUNT(SYS_USER_ID) ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT fk_edu_id FOREIGN KEY (EDU_ID) REFERENCES EDUCATION_STATUS(EDU_ID) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_soec_id FOREIGN KEY (SOEC_ID) REFERENCES SOCIO_ECONOMIC_STATUS(SOEC_ID) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_phea_id FOREIGN KEY (PHEA_ID) REFERENCES PHILHEALTH(PHEA_ID) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_rel_id FOREIGN KEY (REL_ID) REFERENCES RELIGION(REL_ID) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_eth_id FOREIGN KEY (ETH_ID) REFERENCES ETHNICITY(ETH_ID) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_clah_id FOREIGN KEY (CLAH_ID) REFERENCES CLASSIFICATION_HEALTH_RISK(CLAH_ID) ON UPDATE CASCADE ON DELETE SET NULL,
-    CONSTRAINT fk_rth_id FOREIGN KEY (RTH_ID) REFERENCES RELATIONSHIP_TYPE(RTH_ID) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_hh_id FOREIGN KEY (HH_ID) REFERENCES HOUSEHOLD_INFO(HH_ID) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_sitio_id FOREIGN KEY (SITIO_ID) REFERENCES SITIO(SITIO_ID) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT fk_con_id FOREIGN KEY (CON_ID) REFERENCES CONTACT(CON_ID) ON UPDATE CASCADE ON DELETE SET NULL,
+                         CONSTRAINT fk_encoded_by FOREIGN KEY (ENCODED_BY_SYS_ID) REFERENCES SYSTEM_ACCOUNT(SYS_USER_ID) ON DELETE RESTRICT ON UPDATE CASCADE,
+                         CONSTRAINT fk_last_updated_by FOREIGN KEY (LAST_UPDATED_BY_SYS_ID) REFERENCES SYSTEM_ACCOUNT(SYS_USER_ID) ON DELETE RESTRICT ON UPDATE CASCADE,
+                         CONSTRAINT fk_edu_id FOREIGN KEY (EDU_ID) REFERENCES EDUCATION_STATUS(EDU_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+                         CONSTRAINT fk_soec_id FOREIGN KEY (SOEC_ID) REFERENCES SOCIO_ECONOMIC_STATUS(SOEC_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+                         CONSTRAINT fk_phea_id FOREIGN KEY (PHEA_ID) REFERENCES PHILHEALTH(PHEA_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+                         CONSTRAINT fk_rel_id FOREIGN KEY (REL_ID) REFERENCES RELIGION(REL_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+                         CONSTRAINT fk_eth_id FOREIGN KEY (ETH_ID) REFERENCES ETHNICITY(ETH_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+                         CONSTRAINT fk_clah_id FOREIGN KEY (CLAH_ID) REFERENCES CLASSIFICATION_HEALTH_RISK(CLAH_ID) ON UPDATE CASCADE ON DELETE SET NULL,
+                         CONSTRAINT fk_rth_id FOREIGN KEY (RTH_ID) REFERENCES RELATIONSHIP_TYPE(RTH_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+                         CONSTRAINT fk_hh_id FOREIGN KEY (HH_ID) REFERENCES HOUSEHOLD_INFO(HH_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+                         CONSTRAINT fk_sitio_id FOREIGN KEY (SITIO_ID) REFERENCES SITIO(SITIO_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+                         CONSTRAINT fk_con_id FOREIGN KEY (CON_ID) REFERENCES CONTACT(CON_ID) ON UPDATE CASCADE ON DELETE SET NULL,
 
-    CONSTRAINT chk_ethnicity CHECK (
-        (CTZ_IS_IP = TRUE AND ETH_ID IS NOT NULL) OR
-        (CTZ_IS_IP = FALSE AND ETH_ID IS NULL)
-    ),
-    CONSTRAINT chk_pending_delete CHECK (
-        (CTZ_IS_PENDING_DELETE = FALSE) OR
-        (CTZ_IS_PENDING_DELETE = TRUE AND CTZ_DELETE_REQ_REASON IS NOT NULL)
-    ),
-    CONSTRAINT chk_is_alive CHECK (
-        (CTZ_IS_ALIVE = TRUE) OR
-        (CTZ_IS_ALIVE = FALSE AND CTZ_DATE_OF_DEATH IS NOT NULL AND CTZ_REASON_OF_DEATH IS NOT NULL)
-    )
+                         CONSTRAINT chk_ethnicity CHECK (
+                             (CTZ_IS_IP = TRUE AND ETH_ID IS NOT NULL) OR
+                             (CTZ_IS_IP = FALSE AND ETH_ID IS NULL)
+                             ),
+                         CONSTRAINT chk_pending_delete CHECK (
+                             (CTZ_IS_PENDING_DELETE = FALSE) OR
+                             (CTZ_IS_PENDING_DELETE = TRUE AND CTZ_DELETE_REQ_REASON IS NOT NULL)
+                             ),
+                         CONSTRAINT chk_is_alive CHECK (
+                             (CTZ_IS_ALIVE = TRUE) OR
+                             (CTZ_IS_ALIVE = FALSE AND CTZ_DATE_OF_DEATH IS NOT NULL AND CTZ_REASON_OF_DEATH IS NOT NULL)
+                             )
 );
 
 
@@ -333,13 +327,6 @@ CREATE TABLE FAMILY_PLANNING (
 );
 
 
--- CREATE TABLE BUSINESS_OWNER(
---                                BSO_ID SERIAL PRIMARY KEY,
---                                BSO_FNAME VARCHAR(50) NOT NULL,
---                                BSO_LNAME VARCHAR(50) NOT NULL,
---                                BSO_MI CHAR(1)
-);
-
 CREATE TABLE BUSINESS_TYPE(
                               BST_ID INT PRIMARY KEY,
                               BST_TYPE_NAME VARCHAR(100) NOT NULL
@@ -369,7 +356,6 @@ CREATE TABLE BUSINESS_INFO (
                                BS_FNAME VARCHAR(50) NOT NULL,
                                BS_LNAME VARCHAR(50) NOT NULL,
                                BST_ID INT NOT NULL REFERENCES BUSINESS_TYPE(BST_ID),
---                                BSO_ID INT NOT NULL REFERENCES BUSINESS_OWNER(BSO_ID),
                                SITIO_ID INT NOT NULL REFERENCES SITIO(SITIO_ID) ON DELETE CASCADE ON UPDATE CASCADE,
                                ENCODED_BY_SYS_ID INT NOT NULL,
                                LAST_UPDATED_BY_SYS_ID INT NOT NULL,
@@ -515,9 +501,9 @@ CREATE TABLE SETTLEMENT_LOG(
                                CIHI_ID INT NOT NULL REFERENCES CITIZEN_HISTORY(CIHI_ID),
                                ENCODED_BY_SYS_ID INT NOT NULL,
                                LAST_UPDATED_BY_SYS_ID INT NOT NULL,
-                                CONSTRAINT fk_encoded_by FOREIGN KEY (ENCODED_BY_SYS_ID) REFERENCES SYSTEM_ACCOUNT(SYS_USER_ID) ON DELETE RESTRICT ON UPDATE CASCADE,
-                                CONSTRAINT fk_last_updated_by FOREIGN KEY (LAST_UPDATED_BY_SYS_ID) REFERENCES SYSTEM_ACCOUNT(SYS_USER_ID) ON DELETE RESTRICT ON UPDATE CASCADE,
-                                CONSTRAINT chk_pending_delete CHECK (
+                               CONSTRAINT fk_encoded_by FOREIGN KEY (ENCODED_BY_SYS_ID) REFERENCES SYSTEM_ACCOUNT(SYS_USER_ID) ON DELETE RESTRICT ON UPDATE CASCADE,
+                               CONSTRAINT fk_last_updated_by FOREIGN KEY (LAST_UPDATED_BY_SYS_ID) REFERENCES SYSTEM_ACCOUNT(SYS_USER_ID) ON DELETE RESTRICT ON UPDATE CASCADE,
+                               CONSTRAINT chk_pending_delete CHECK (
                                    (SETT_IS_PENDING_DELETE = FALSE) OR
                                    (SETT_IS_PENDING_DELETE = TRUE AND SETT_DELETE_REQ_REASON IS NOT NULL)
                                    )
@@ -680,49 +666,45 @@ FROM
     citizen
 WHERE
     ctz_is_alive = TRUE;
---
--- -- ONLY FOR CTIZEN
--- CREATE OR REPLACE FUNCTION log_entity_activity()
---     RETURNS TRIGGER AS $$
--- DECLARE
---     v_entity_id INT;
--- BEGIN
-
---     IF TG_OP = 'INSERT' THEN
---         v_entity_id := NEW.CTZ_ID;
---     ELSIF TG_OP = 'UPDATE' OR TG_OP = 'DELETE' THEN
---         v_entity_id := OLD.CTZ_ID;
---     END IF;
---
---     INSERT INTO SYSTEM_ACTIVITY_LOG (
---         ACT_ACTION_TYPE,
---         ACT_TABLE_NAME,
---         ACT_ENTITY_ID,
---         SYS_ID,
---         ACT_DESCRIPTION
---     )
---     VALUES (
---                TG_OP,
---                TG_TABLE_NAME,
---                v_entity_id,
---                current_setting('app.current_user_id')::INT,
---                CONCAT('Action ', TG_OP, ' on ', TG_TABLE_NAME, ' ID = ', v_entity_id)
---            );
---
---     RETURN CASE
---                WHEN TG_OP = 'DELETE' THEN OLD
---                ELSE NEW
---         END;
--- END;
--- $$ LANGUAGE plpgsql;
---
--- -- CITIZEN
--- CREATE TRIGGER trg_log_citizen
---     AFTER INSERT OR UPDATE OR DELETE ON CITIZEN
---     FOR EACH ROW
--- EXECUTE FUNCTION log_entity_activity();
 
 
+-- ONLY FOR CTIZEN
+CREATE OR REPLACE FUNCTION log_entity_activity()
+    RETURNS TRIGGER AS $$
+DECLARE
+    v_entity_id INT;
+BEGIN
+
+    IF TG_OP = 'INSERT' THEN
+        v_entity_id := NEW.CTZ_ID;
+    ELSIF TG_OP = 'UPDATE' OR TG_OP = 'DELETE' THEN
+        v_entity_id := OLD.CTZ_ID;
+    END IF;
+
+    INSERT INTO SYSTEM_ACTIVITY_LOG (
+        ACT_ACTION_TYPE,
+        ACT_TABLE_NAME,
+        ACT_ENTITY_ID,
+        SYS_ID,
+        ACT_DESCRIPTION
+    )
+    VALUES (
+               TG_OP::action_type_enum,
+               TG_TABLE_NAME,
+               v_entity_id,
+               current_setting('app.current_user_id')::INT,
+               CONCAT('Action ', TG_OP, ' on ', TG_TABLE_NAME, ' ID = ', v_entity_id)
+           );
+
+    RETURN CASE
+               WHEN TG_OP = 'DELETE' THEN OLD
+               ELSE NEW
+        END;
+END;
+$$ LANGUAGE plpgsql;
+
+--TEMPORARY ONLY, NEEDS TO BE DELETED LATER
+SET app.current_user_id = '1';
 
 --INSERTS
 
@@ -751,34 +733,34 @@ VALUES
 
 INSERT INTO SITIO(SITIO_NAME)
 VALUES
-        ('Cadulang 1'),
-        ('Cadulang 2'),
-        ('Cambiohan'),
-        ('Chocolate Hills'),
-        ('Hawaiian 1'),
-        ('Hawaiian 2'),
-        ('Ikaseg'),
-        ('Ibabao'),
-        ('Kalubihan'),
-        ('Kaisid'),
-        ('Kolo'),
-        ('Limogmog'),
-        ('Likoan'),
-        ('Marbeach'),
-        ('Mahayahay'),
-        ('Masiwa'),
-        ('Matab-ang'),
-        ('Osflor'),
-        ('Marigondon Proper'),
-        ('San Carlos'),
-        ('St. Joseph'),
-        ('Sto. Kristo'),
-        ('Sto. Niño'),
-        ('Tabay Mabao'),
-        ('Villa Verna'),
-        ('Whitefox'),
-        ('Ylaya'),
-        ('Ylacir');
+    ('Cadulang 1'),
+    ('Cadulang 2'),
+    ('Cambiohan'),
+    ('Chocolate Hills'),
+    ('Hawaiian 1'),
+    ('Hawaiian 2'),
+    ('Ikaseg'),
+    ('Ibabao'),
+    ('Kalubihan'),
+    ('Kaisid'),
+    ('Kolo'),
+    ('Limogmog'),
+    ('Likoan'),
+    ('Marbeach'),
+    ('Mahayahay'),
+    ('Masiwa'),
+    ('Matab-ang'),
+    ('Osflor'),
+    ('Marigondon Proper'),
+    ('San Carlos'),
+    ('St. Joseph'),
+    ('Sto. Kristo'),
+    ('Sto. Niño'),
+    ('Tabay Mabao'),
+    ('Villa Verna'),
+    ('Whitefox'),
+    ('Ylaya'),
+    ('Ylacir');
 
 INSERT INTO SYSTEM_ACCOUNT (
     SYS_PASSWORD,
@@ -798,23 +780,23 @@ INSERT INTO SYSTEM_ACCOUNT (
 
 INSERT INTO CLASSIFICATION_HEALTH_RISK (CLAH_CLASSIFICATION_NAME)
 VALUES
-        ('None'),
-        ('Pregnant'),
-        ('Adolescent Pregnant'),
-        ('Postpartum'),
-        ('Infant'),
-        ('Under 5 Years Old'),
-        ('Person With Disability');
+    ('None'),
+    ('Pregnant'),
+    ('Adolescent Pregnant'),
+    ('Postpartum'),
+    ('Infant'),
+    ('Under 5 Years Old'),
+    ('Person With Disability');
 
 
 
 INSERT INTO RELATIONSHIP_TYPE (RTH_RELATIONSHIP_NAME)
 VALUES
-        ('Head'),
-        ('Spouse'),
-        ('Son'),
-        ('Daughter'),
-        ('Other Relative');
+    ('Head'),
+    ('Spouse'),
+    ('Son'),
+    ('Daughter'),
+    ('Other Relative');
 
 INSERT INTO RELIGION (REL_ID, REL_NAME) VALUES
                                             (1, 'None'),
@@ -832,9 +814,9 @@ INSERT INTO RELIGION (REL_ID, REL_NAME) VALUES
 
 INSERT INTO SOCIO_ECONOMIC_STATUS (SOEC_STATUS, SOEC_NUMBER)
 VALUES
-        ('NHTS 4Ps', '123456'),
-        ('NHTS Non-4Ps', '654321'),
-        ('Non-NHTS', 'N/A');
+    ('NHTS 4Ps', '123456'),
+    ('NHTS Non-4Ps', '654321'),
+    ('Non-NHTS', 'N/A');
 
 --sample household
 INSERT INTO HOUSEHOLD_INFO (
@@ -935,15 +917,15 @@ INSERT INTO CITIZEN (
 -- INFRASTRUCTURE
 INSERT INTO INFRASTRUCTURE_TYPE (INFT_TYPE_NAME)
 VALUES
-        ('Barangay Hall'),
-        ('Health Center'),
-        ('Daycare Center'),
-        ('Basketball Court');
+    ('Barangay Hall'),
+    ('Health Center'),
+    ('Daycare Center'),
+    ('Basketball Court');
 
 INSERT INTO INFRASTRUCTURE_OWNER (INFO_LNAME, INFO_FNAME, INFO_MNAME)
 VALUES
-        ('Tan', 'Michael', 'C'),
-        ('Lim', 'Angela', 'B');
+    ('Tan', 'Michael', 'C'),
+    ('Lim', 'Angela', 'B');
 
 INSERT INTO INFRASTRUCTURE (
     INF_NAME,
@@ -978,10 +960,6 @@ VALUES
     (5, 'Franchise'),
     (6, 'Others');
 
--- INSERT INTO BUSINESS_OWNER (BSO_FNAME, BSO_LNAME, BSO_MI)
--- VALUES
---         ('Alfredo', 'Garcia', 'D'),
---         ('Corazon', 'Ramos', 'M');
 
 INSERT INTO BUSINESS_INFO (
     BS_NAME,
@@ -991,7 +969,7 @@ INSERT INTO BUSINESS_INFO (
     BS_ADDRESS,
     BST_ID,
     ENCODED_BY_SYS_ID,
-   LAST_UPDATED_BY_SYS_ID,
+    LAST_UPDATED_BY_SYS_ID,
     BS_FNAME,
     BS_LNAME,
     SITIO_ID
@@ -1015,60 +993,60 @@ INSERT INTO BUSINESS_INFO (
 -- HEALTH
 INSERT INTO PHILHEALTH_CATEGORY (PC_CATEGORY_NAME)
 VALUES
-        ('Formal Economy Private'),
-        ('Formal Economy Government'),
-        ('Informal Economy'),
-        ('NHTS'),
-        ('Senior Citizen'),
-        ('Indigenous People'),
-        ('Unknown');
+    ('Formal Economy Private'),
+    ('Formal Economy Government'),
+    ('Informal Economy'),
+    ('NHTS'),
+    ('Senior Citizen'),
+    ('Indigenous People'),
+    ('Unknown');
 
 INSERT INTO PHILHEALTH (PHEA_ID_NUMBER, PHEA_MEMBERSHIP_TYPE, PC_ID)
 VALUES
-        ('123456789012', 'Member', (SELECT PC_ID FROM PHILHEALTH_CATEGORY WHERE PC_CATEGORY_NAME = 'Formal Economy Private')),
-        ('987654321098', 'Dependent', (SELECT PC_ID FROM PHILHEALTH_CATEGORY WHERE PC_CATEGORY_NAME = 'Indigenous People'));
+    ('123456789012', 'Member', (SELECT PC_ID FROM PHILHEALTH_CATEGORY WHERE PC_CATEGORY_NAME = 'Formal Economy Private')),
+    ('987654321098', 'Dependent', (SELECT PC_ID FROM PHILHEALTH_CATEGORY WHERE PC_CATEGORY_NAME = 'Indigenous People'));
 
 INSERT INTO MEDICAL_HISTORY_TYPE (MHT_TYPE_NAME)
 VALUES
-        ('Hypertension'),
-        ('Diabetes'),
-        ('Tuberculosis'),
-        ('Surgery'),
-        ('Others');
+    ('Hypertension'),
+    ('Diabetes'),
+    ('Tuberculosis'),
+    ('Surgery'),
+    ('Others');
 
 
 INSERT INTO FAMILY_PLANNING_METHOD (FPM_METHOD)
 VALUES
-        ('COC'),
-        ('POP'),
-        ('Injectables'),
-        ('IUD'),
-        ('Condom'),
-        ('LAM'),
-        ('BTL'),
-        ('Implant'),
-        ('SDM'),
-        ('DPT'),
-        ('Withdrawal'),
-        ('Others');
+    ('COC'),
+    ('POP'),
+    ('Injectables'),
+    ('IUD'),
+    ('Condom'),
+    ('LAM'),
+    ('BTL'),
+    ('Implant'),
+    ('SDM'),
+    ('DPT'),
+    ('Withdrawal'),
+    ('Others');
 
 INSERT INTO FPM_STATUS (FPMS_STATUS_NAME)
 VALUES
-        ('New Acceptor'),
-        ('Current User'),
-        ('Changing Method'),
-        ('Changing Clinic'),
-        ('Dropout'),
-        ('Restarter');
+    ('New Acceptor'),
+    ('Current User'),
+    ('Changing Method'),
+    ('Changing Clinic'),
+    ('Dropout'),
+    ('Restarter');
 
 
 -- EMPLOYMENT
 INSERT INTO EMPLOYMENT_STATUS (ES_STATUS_NAME)
 VALUES
-        ('Employed'),
-        ('Unemployed'),
-        ('Self Employed'),
-        ('Retired');
+    ('Employed'),
+    ('Unemployed'),
+    ('Self Employed'),
+    ('Retired');
 
 
 
@@ -1078,16 +1056,16 @@ INSERT INTO EMPLOYMENT (
     ES_ID,
     CTZ_ID
 ) VALUES
-      ('Barangay Health Worker', TRUE,
-       (SELECT ES_ID FROM EMPLOYMENT_STATUS WHERE ES_STATUS_NAME = 'Employed'),
-       (SELECT CTZ_ID FROM CITIZEN WHERE CTZ_LAST_NAME = 'Gonzales'));
+    ('Barangay Health Worker', TRUE,
+     (SELECT ES_ID FROM EMPLOYMENT_STATUS WHERE ES_STATUS_NAME = 'Employed'),
+     (SELECT CTZ_ID FROM CITIZEN WHERE CTZ_LAST_NAME = 'Gonzales'));
 
 -- TRANSACTIONS
 INSERT INTO TRANSACTION_TYPE (TT_TYPE_NAME)
 VALUES
-        ('Barangay Clearance'),
-        ('Business Permit'),
-        ('Complaint');
+    ('Barangay Clearance'),
+    ('Business Permit'),
+    ('Complaint');
 
 INSERT INTO TRANSACTION_LOG (
     TL_PURPOSE,
@@ -1096,7 +1074,7 @@ INSERT INTO TRANSACTION_LOG (
     TL_LNAME,
     TT_ID,
     ENCODED_BY_SYS_ID,
-     LAST_UPDATED_BY_SYS_ID
+    LAST_UPDATED_BY_SYS_ID
 ) VALUES
       ('For loan application', 'Approved', 'Roberto', 'Gonzales',
        (SELECT TT_ID FROM TRANSACTION_TYPE WHERE TT_TYPE_NAME = 'Barangay Clearance'),
@@ -1111,20 +1089,20 @@ INSERT INTO TRANSACTION_LOG (
 -- COMPLAINTS
 INSERT INTO COMPLAINANT (COMP_FNAME, COMP_LNAME, COMP_MNAME)
 VALUES
-        ('Lourdes', 'Santos', 'R'),
-        ('Carlos', 'Reyes', 'M');
+    ('Lourdes', 'Santos', 'R'),
+    ('Carlos', 'Reyes', 'M');
 
 INSERT INTO HISTORY_TYPE (HIST_TYPE_NAME)
 VALUES
-       ('Complaint'),
-       ('Violation');
+    ('Complaint'),
+    ('Violation');
 
 INSERT INTO CITIZEN_HISTORY (
     CIHI_DESCRIPTION,
     HIST_ID,
     CTZ_ID,
     ENCODED_BY_SYS_ID,
-     LAST_UPDATED_BY_SYS_ID
+    LAST_UPDATED_BY_SYS_ID
 ) VALUES
     ('Noise complaint',
      (SELECT HIST_ID FROM HISTORY_TYPE WHERE HIST_TYPE_NAME = 'Complaint'),
@@ -1155,13 +1133,13 @@ INSERT INTO MEDICAL_HISTORY (
     ENCODED_BY_SYS_ID,
     LAST_UPDATED_BY_SYS_ID
 ) VALUES (
-    'Nag hypertension',
-    '2020-01-15',
-    (SELECT MHT_ID FROM MEDICAL_HISTORY_TYPE WHERE MHT_TYPE_NAME = 'Hypertension'),
-    (SELECT CTZ_ID FROM CITIZEN WHERE CTZ_LAST_NAME = 'Gonzales'),
-    (SELECT SYS_USER_ID FROM SYSTEM_ACCOUNT WHERE SYS_USER_ID = 1002),
-    (SELECT SYS_USER_ID FROM SYSTEM_ACCOUNT WHERE SYS_USER_ID = 1002)
-);
+             'Nag hypertension',
+             '2020-01-15',
+             (SELECT MHT_ID FROM MEDICAL_HISTORY_TYPE WHERE MHT_TYPE_NAME = 'Hypertension'),
+             (SELECT CTZ_ID FROM CITIZEN WHERE CTZ_LAST_NAME = 'Gonzales'),
+             (SELECT SYS_USER_ID FROM SYSTEM_ACCOUNT WHERE SYS_USER_ID = 1002),
+             (SELECT SYS_USER_ID FROM SYSTEM_ACCOUNT WHERE SYS_USER_ID = 1002)
+         );
 
 
 -- Family Planning
